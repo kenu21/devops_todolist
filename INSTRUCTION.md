@@ -69,7 +69,8 @@ docker run -d -p 8080:8080 --name todoapp todoapp:1.0.0
 * `-p 8080:8080` maps the container port `8080` to your local machine port `8080`.
 * `-d` runs the container in detached mode.
 
-The container will automatically run database migrations and start the Django server.
+Note: Database migrations are executed during the image build stage, not at container startup. 
+This means the database schema is already prepared when the container runs.
 
 ---
 

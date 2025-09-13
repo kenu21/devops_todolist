@@ -24,10 +24,6 @@ COPY --from=base /install /usr/local
 
 RUN python manage.py migrate
 
-RUN addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
-USER appuser
-
 EXPOSE 8080
 
 VOLUME /app/db
