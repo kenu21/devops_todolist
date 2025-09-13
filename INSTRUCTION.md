@@ -5,13 +5,28 @@ This document contains instructions for building, running, and accessing the ToD
 ## Docker Image
 
 The Docker image for this application is hosted on Docker Hub:
-[https://hub.docker.com/repository/docker/kenu21/devops_todolist/general](https://hub.docker.com/repository/docker/kenu21/devops_todolist/general)
+[https://hub.docker.com/repository/docker/kenu21/todoapp/general](https://hub.docker.com/repository/docker/kenu21/todoapp/general)
 
 Image name and tag:
 
 ```
-kenu21/devops_todolist:1.0.0
+kenu21/todoapp:1.0.0
 ```
+
+---
+
+## Repository Layout
+
+The project expects the following top-level directories in the repository:
+
+- manage.py
+- requirements.txt
+- api/
+- accounts/
+- lists/
+- todolist/
+
+Make sure all of these exist before building the Docker image.
 
 ---
 
@@ -25,6 +40,21 @@ docker build --build-arg PYTHON_VERSION=3.13 -t todoapp:1.0.0 .
 ```
 
 Here `PYTHON_VERSION` can be changed to your preferred Python version supported by Django 4 (3.8+).
+
+---
+
+# Build the Docker image locally
+docker build --build-arg PYTHON_VERSION=3.13 -t todoapp:1.0.0 .
+
+---
+
+# Tag the image for Docker Hub
+docker tag todoapp:1.0.0 kenu21/todoapp:1.0.0
+
+---
+
+# Push the image to Docker Hub
+docker push kenu21/todoapp:1.0.0
 
 ---
 
@@ -59,3 +89,6 @@ You should see the landing page of the ToDo List application.
 
 * The environment variable `PYTHONUNBUFFERED=1` is set to ensure logs are printed directly to stdout/stderr.
 * The Django server runs on `0.0.0.0:8080` inside the container to allow external access.
+* The `RUN python manage.py migrate` command is executed during the image build. 
+  - If your project uses **SQLite**, the database file will be created in `/app/db`. Make sure this path is writable and persistent (a volume is declared at `/app/db`).
+  - If your project uses an **external database** (e.g., Postgres), ensure that the database is accessible at build time; otherwise, migrations may fail. In such cases, consider running migrations at container start.
